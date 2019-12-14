@@ -55,8 +55,16 @@ If called interactively from dired, submit the marked files if there are any. Ot
   "Completing read function for `exercism-tracks'."
   (completing-read "Track: " (exercism-tracks)))
 
-(defun exercism-completing-read-exercise()
-  "Completing read function exercise."
+(defun exercism-exercises-in-track(track)
+  "Return a list of available exercises in TRACK based on folders in `exercism-workspace'."
+    (seq-filter (lambda (dir) (not(seq-contains '("." "..") dir))) (directory-files (concat (exercism-workspace) "/" track))))
+
+(defun exercism-completing-read-exercise (track)
+  "Completing read function for exercises in TRACK."
+  (completing-read "Exercise: " (exercism-exercises-in-track track)))
+
+(defun exercism-read-new-exercise()
+  "Read new exercise name."
   (downcase (read-string "Exercise: ")))
 
 (defun exercism-workspace()
@@ -77,13 +85,22 @@ If called interactively from dired, submit the marked files if there are any. Ot
       (error (concat "The directory for track " track "does not exist yet.")))))
 
 ;;;###autoload
+(defun exercism-go-to-exercise(track &optional exercise)
+  "Prompt for EXERCISE in TRACK and open the corresponding README file."
+  (interactive (list (exercism-completing-read-track)))
+  (let* ((exercise (if exercise exercise (exercism-completing-read-exercise track)))
+        (directory (concat (exercism-workspace) "/" track "/" exercise)))
+    (when (file-directory-p directory)
+        (find-file (concat directory "/" "README.md")))))
+
+;;;###autoload
 (defun exercism-download-task (track exercise)
   "Download EXERCISE in TRACK and switch to readme of this exercise."
-  (interactive (list (exercism-completing-read-track) (exercism-completing-read-exercise)))
+  (interactive (list (exercism-completing-read-track) (exercism-read-new-exercise)))
   (exercism-command-to-string (format "download --track=%s --exercise=%s" track exercise))
   (let ((new-directory (concat (exercism-workspace) "/" track "/" exercise)))
     (if (file-directory-p new-directory)
-        (find-file (concat new-directory "/" "README.md"))
+        (exercism-go-to-exercise track exercise)
       (error (format "Could not download the exercise %s in track %s." exercise track)))))
 
 
