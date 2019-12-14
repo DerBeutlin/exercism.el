@@ -1,6 +1,7 @@
 (source melpa)
 
 (package-file "exercism.el")
+(depends-on "s")
 
 (development
  (depends-on "ert")

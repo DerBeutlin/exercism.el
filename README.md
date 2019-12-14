@@ -2,11 +2,11 @@
 
 ## Summary
 
-A package to interact with exercism.io
+A package to interact with exercism.io using the exercism cli
 
 ## Installing
 
-You will need Emacs 24+, `make` and [Cask](https://github.com/cask/cask) to
+You will need Emacs 25.1+, `make` and [Cask](https://github.com/cask/cask) to
 build the project.
 
     cd exercism
