@@ -28,9 +28,6 @@
 (require 'ert)
 (require 'exercism)
 
-(ert-deftest exercism-check-sum ()
-  (should (equal (+ 1 1) 2)))
-
 (provide 'exercism-test)
 
 ;;; exercism-test.el ends here
